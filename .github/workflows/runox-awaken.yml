@@ -3,7 +3,7 @@ name: Runox-Awaken
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 1 */2 * *'
 
 jobs:
   run_runox_awaken:
@@ -29,7 +29,7 @@ jobs:
 
       - name: 🛡️ 启动 Gost 代理转发
         run: |
-          LATEST=$(curl -s https://api.github.com/repos/ginuerzh/gost/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+          LATEST=$(curl -sf https://api.github.com/repos/ginuerzh/gost/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
           VERSION=${LATEST#v}
           echo "📦 Gost 最新版本：$LATEST"
           wget -q "https://github.com/ginuerzh/gost/releases/download/${LATEST}/gost-linux-amd64-${VERSION}.gz"
@@ -38,9 +38,9 @@ jobs:
           mv "gost-linux-amd64-${VERSION}" gost
           echo "🚀 启动 Gost 转发隧道..."
           nohup ./gost -L http://:8080 -F ${{ secrets.GOST_PROXY }} > gost.log 2>&1 &
-          sleep 3
+          sleep 5
           echo "🌐 测试本地代理连通性..."
-          curl -x http://127.0.0.1:8080 https://api.ipify.org -v
+          curl --noproxy '*' -x http://127.0.0.1:8080 https://api.ipify.org --max-time 10 || echo "⚠️ 代理连通性测试失败，继续执行"
 
       - name: 🛠️ 安装系统依赖
         run: |
