@@ -40,7 +40,7 @@ jobs:
           nohup ./gost -L http://:8080 -F ${{ secrets.GOST_PROXY }} > gost.log 2>&1 &
           sleep 3
           echo "🌐 测试本地代理连通性..."
-          wget -qO- --timeout=10 -e use_proxy=yes -e http_proxy=http://127.0.0.1:8080 https://api.ipify.org || echo "⚠️ 代理连通性测试失败，继续执行"
+          curl -sk -x http://127.0.0.1:8080 https://api.ipify.org || echo "⚠️ 代理连通性测试失败，继续执行"
 
       - name: 🛠️ 安装系统依赖
         run: |
