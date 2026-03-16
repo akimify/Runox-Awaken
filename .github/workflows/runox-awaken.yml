@@ -15,7 +15,7 @@ jobs:
       - name: 📥 下载私库脚本
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.repository_owner }}/Runox-Awaken
+          repository: ${{ github.repository_owner }}/Runox-Awaken-Private
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           path: private
 
